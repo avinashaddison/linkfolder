@@ -18,6 +18,37 @@ def index():
     """Main page with URL input form"""
     return render_template('index.html')
 
+@app.route('/search', methods=['POST'])
+def search_movies():
+    """Search for movies on MoviesDrive.cc"""
+    keyword = request.form.get('keyword', '').strip()
+    
+    if not keyword:
+        flash('Please enter a movie name to search', 'error')
+        return redirect(url_for('index'))
+    
+    try:
+        # Search for movies
+        result = link_extractor.search_movies(keyword)
+        
+        if result['error']:
+            flash(result['error'], 'error')
+            return redirect(url_for('index'))
+        
+        if not result['movies']:
+            flash(f'No movies found for "{keyword}"', 'error')
+            return redirect(url_for('index'))
+        
+        return render_template('search_results.html', 
+                             keyword=keyword,
+                             movies=result['movies'],
+                             total_count=result['total_count'])
+    
+    except Exception as e:
+        logging.error(f"Error searching movies: {str(e)}")
+        flash('An unexpected error occurred while searching', 'error')
+        return redirect(url_for('index'))
+
 @app.route('/extract', methods=['POST'])
 def extract_links():
     """Extract links from the provided URL"""

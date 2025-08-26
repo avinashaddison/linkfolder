@@ -21,6 +21,46 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Mode switching
+    const searchMode = document.getElementById('searchMode');
+    const urlMode = document.getElementById('urlMode');
+    const searchForm = document.getElementById('searchForm');
+    const urlForm = document.getElementById('urlForm');
+    
+    if (searchMode && urlMode && searchForm && urlForm) {
+        searchMode.addEventListener('change', function() {
+            if (this.checked) {
+                searchForm.style.display = 'block';
+                urlForm.style.display = 'none';
+            }
+        });
+        
+        urlMode.addEventListener('change', function() {
+            if (this.checked) {
+                searchForm.style.display = 'none';
+                urlForm.style.display = 'block';
+            }
+        });
+    }
+
+    // Example search buttons
+    const exampleSearchButtons = document.querySelectorAll('.example-search');
+    exampleSearchButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const keyword = this.dataset.keyword;
+            const keywordInput = document.getElementById('keyword');
+            if (keywordInput) {
+                // Switch to search mode
+                if (searchMode) {
+                    searchMode.checked = true;
+                    searchMode.dispatchEvent(new Event('change'));
+                }
+                keywordInput.value = keyword;
+                keywordInput.focus();
+            }
+        });
+    });
+
     // Example URL buttons
     const exampleButtons = document.querySelectorAll('.example-url');
     exampleButtons.forEach(button => {
@@ -28,6 +68,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const url = this.dataset.url;
             const urlInput = document.getElementById('url');
             if (urlInput) {
+                // Switch to URL mode
+                if (urlMode) {
+                    urlMode.checked = true;
+                    urlMode.dispatchEvent(new Event('change'));
+                }
                 urlInput.value = url;
                 urlInput.focus();
             }

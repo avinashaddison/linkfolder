@@ -14,6 +14,57 @@ class LinkExtractor:
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         })
     
+    def search_movies(self, keyword):
+        """Search for movies on MoviesDrive.cc"""
+        try:
+            search_url = f"https://moviesdrive.cc/?s={keyword}"
+            response = self.session.get(search_url, timeout=10)
+            response.raise_for_status()
+            
+            soup = BeautifulSoup(response.content, 'html.parser')
+            
+            movies = []
+            # Find movie entries in search results
+            for article in soup.find_all(['article', 'div'], class_=['post', 'movie', 'item']):
+                title_link = article.find('a', href=True)
+                if title_link and 'moviesdrive.cc' in title_link['href']:
+                    title = title_link.get_text(strip=True)
+                    url = title_link['href']
+                    
+                    # Try to get movie poster
+                    img = article.find('img')
+                    poster = img['src'] if img and img.get('src') else ''
+                    
+                    movies.append({
+                        'title': title,
+                        'url': url,
+                        'poster': poster
+                    })
+            
+            # Alternative search method - look for direct links
+            if not movies:
+                for link in soup.find_all('a', href=True):
+                    if 'moviesdrive.cc' in link['href'] and keyword.lower() in link.get_text().lower():
+                        movies.append({
+                            'title': link.get_text(strip=True),
+                            'url': link['href'],
+                            'poster': ''
+                        })
+            
+            return {
+                'error': None,
+                'movies': movies[:10],  # Limit to 10 results
+                'total_count': len(movies)
+            }
+            
+        except Exception as e:
+            logging.error(f"Search error: {str(e)}")
+            return {
+                'error': f'Search failed: {str(e)}',
+                'movies': [],
+                'total_count': 0
+            }
+    
     def extract_links(self, url):
         """Extract download links - handles both MoviesDrive.cc and MDrive.today links"""
         try:
