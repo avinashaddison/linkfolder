@@ -201,64 +201,338 @@
     transition: opacity 0.3s ease;
 }
 
-/* Enhanced search form */
+/* Perfect Search Form Design */
 .search-form {
     position: relative;
 }
 
 .search-form .card {
-    background: linear-gradient(135deg, rgba(var(--bs-dark-rgb), 0.8), rgba(var(--bs-secondary-rgb), 0.3));
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(145deg, #1a1f3a 0%, #2d3561 50%, #1a1f3a 100%);
+    border: 2px solid transparent;
+    border-radius: 20px;
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    overflow: hidden;
+}
+
+.search-form .card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c, #4facfe, #00f2fe);
+    border-radius: 20px;
+    z-index: -1;
+    animation: borderGlow 3s linear infinite;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.search-form .card:hover::before {
+    opacity: 0.8;
+}
+
+@keyframes borderGlow {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.search-form .card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 
+        0 30px 60px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* Search Label Animation */
+.search-form .form-label {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+}
+
+.search-form .form-label::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background: linear-gradient(45deg, var(--bs-primary), var(--bs-info));
+    border-radius: 2px;
+    transition: width 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.search-form .card:hover .form-label::after {
+    width: 100%;
+}
+
+/* Input Group Styling */
+.search-form .input-group {
+    position: relative;
+    margin-bottom: 1.5rem;
 }
 
 .search-form .input-group-text {
-    background: linear-gradient(45deg, var(--bs-primary), var(--bs-info));
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 15px 0 0 15px;
+    padding: 1rem 1.2rem;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
 }
 
-.search-form input:focus {
-    box-shadow: 0 0 20px rgba(var(--bs-primary-rgb), 0.3);
+.search-form .form-control {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid transparent;
+    border-radius: 0 15px 15px 0;
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+    color: #fff;
+    backdrop-filter: blur(10px);
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.search-form .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease;
+}
+
+.search-form .form-control:focus {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(102, 126, 234, 0.6);
+    box-shadow: 
+        0 0 30px rgba(102, 126, 234, 0.4),
+        inset 0 2px 10px rgba(0, 0, 0, 0.2),
+        0 0 0 0 transparent;
     transform: scale(1.02);
+    color: #fff;
+}
+
+.search-form .form-control:focus::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+    transform: translateY(-2px);
+}
+
+/* Form Text Enhancement */
+.search-form .form-text {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.8rem 1.2rem;
+    border-radius: 12px;
+    border-left: 3px solid var(--bs-info);
+    backdrop-filter: blur(10px);
+    margin-bottom: 2rem;
     transition: all 0.3s ease;
 }
 
-/* Feature cards */
+.search-form .card:hover .form-text {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateX(5px);
+}
+
+/* Button Perfection */
+.search-form .btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #667eea 100%);
+    border: none;
+    border-radius: 15px;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 
+        0 8px 25px rgba(102, 126, 234, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.search-form .btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s;
+}
+
+.search-form .btn:hover::before {
+    left: 100%;
+}
+
+.search-form .btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 
+        0 15px 35px rgba(102, 126, 234, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 50%, #764ba2 100%);
+}
+
+.search-form .btn:active {
+    transform: translateY(-1px) scale(1.02);
+    transition: all 0.1s ease;
+}
+
+/* Floating Animation */
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    33% { transform: translateY(-10px) rotate(1deg); }
+    66% { transform: translateY(-5px) rotate(-1deg); }
+}
+
+.search-form .card {
+    animation: float 6s ease-in-out infinite;
+}
+
+.search-form .card:hover {
+    animation-play-state: paused;
+}
+
+/* Enhanced Feature cards */
 .feature-card {
-    background: rgba(var(--bs-dark-rgb), 0.6);
+    background: linear-gradient(145deg, rgba(26, 31, 58, 0.8), rgba(45, 53, 97, 0.6));
     border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
+    border-radius: 20px;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    backdrop-filter: blur(15px);
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.8s;
+}
+
+.feature-card:hover::before {
+    left: 100%;
 }
 
 .feature-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    background: rgba(var(--bs-dark-rgb), 0.8);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+    background: linear-gradient(145deg, rgba(26, 31, 58, 0.9), rgba(45, 53, 97, 0.8));
+    border-color: rgba(102, 126, 234, 0.3);
 }
 
 .feature-icon {
-    padding: 1rem;
+    padding: 1.5rem;
     border-radius: 50%;
-    background: rgba(var(--bs-primary-rgb), 0.1);
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
     display: inline-block;
     margin-bottom: 1rem;
+    position: relative;
+    transition: all 0.4s ease;
+    box-shadow: 
+        0 10px 20px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-/* Example buttons */
+.feature-icon::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border-radius: 50%;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.feature-card:hover .feature-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.feature-card:hover .feature-icon::before {
+    opacity: 1;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* Perfect Example buttons */
+.example-search {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    border-radius: 25px;
+    padding: 0.6rem 1.2rem;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.example-search::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.example-search:hover::before {
+    left: 100%;
+}
+
 .example-search:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(var(--bs-info-rgb), 0.3);
-    background: var(--bs-info);
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
-    border-color: var(--bs-info);
+    border-color: transparent;
 }
 
-/* Header styling */
+/* Card container enhancements */
+.card.border-0.bg-dark {
+    background: linear-gradient(145deg, rgba(26, 31, 58, 0.8), rgba(45, 53, 97, 0.6)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 20px;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Enhanced Header styling */
 .display-4 {
-    font-weight: 700;
-    background: linear-gradient(45deg, var(--bs-primary), var(--bs-info));
+    font-weight: 800;
+    background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c);
+    background-size: 300% 300%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    animation: gradientShift 4s ease infinite;
+    text-shadow: 0 0 30px rgba(102, 126, 234, 0.3);
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 /* Developer credit */
