@@ -112,6 +112,34 @@ class LinkExtractor:
                 
                 links.append(link_info)
         
+        # Check for image links that might be download buttons
+        for img in soup.find_all('img'):
+            parent_link = img.find_parent('a')
+            if parent_link and parent_link.get('href'):
+                href = parent_link['href']
+                if not any(link['url'] == urljoin(base_url, href) for link in links):
+                    absolute_url = urljoin(base_url, href)
+                    img_alt = img.get('alt', '')
+                    img_src = img.get('src', '')
+                    link_text = img_alt or parent_link.get_text(strip=True) or 'Image Link'
+                    
+                    # Check if this looks like a download button
+                    if any(keyword in img_alt.lower() for keyword in ['download', 'get', 'hubcloud', 'gdflix', 'drive']) or \
+                       any(keyword in img_src.lower() for keyword in ['download', 'hubcloud', 'gdflix', 'drive']):
+                        
+                        link_info = {
+                            'url': absolute_url,
+                            'original_href': href,
+                            'text': link_text,
+                            'title': parent_link.get('title', ''),
+                            'target': parent_link.get('target', ''),
+                            'rel': parent_link.get('rel', []),
+                            'class': parent_link.get('class', []),
+                            'type': 'image_link'
+                        }
+                        
+                        links.append(link_info)
+        
         return links
     
     def _categorize_links(self, links):
@@ -203,18 +231,32 @@ class LinkExtractor:
             # Download domains (file hosting services)
             download_domains = ['hubcloud', 'gdflix', 'gdtot', 'drive.google', 'mega.nz', 'mediafire',
                               'dropbox', 'onedrive', 'box.com', 'wetransfer', 'sendspace', 'zippyshare',
-                              'uploadhaven', '4shared', 'rapidgator', 'turbobit', 'nitroflare']
+                              'uploadhaven', '4shared', 'rapidgator', 'turbobit', 'nitroflare', 'gdlink',
+                              'gofile.io', 'anonfiles', 'catbox.moe', 'pixeldrain', 'krakenfiles',
+                              'upload.ee', 'filebin.net', 'temp.sh', 'streamtape', 'doodstream']
             
             # Download keywords in text or URL
-            download_keywords = ['download', 'get', 'grab', 'fetch', 'direct-dl', 'drive-login']
+            download_keywords = ['download', 'get', 'grab', 'fetch', 'direct-dl', 'drive-login', 'file/',
+                               'dl/', 'stream', 'watch', 'play', 'movie', 'episode', 'season']
             
             # Check if this is a download link
             is_download = (
+                # File extensions
                 any(ext in path for ext in download_extensions) or
+                # Hosting domains
                 any(domain_name in domain for domain_name in download_domains) or
+                # Keywords in text
                 any(keyword in text for keyword in download_keywords) or
+                # Keywords in URL
                 any(keyword in url for keyword in download_keywords) or
-                'file/' in url or 'dl/' in url or 'download/' in url
+                # Common download URL patterns
+                'file/' in url or 'dl/' in url or 'download/' in url or
+                '/drive/' in url or '/folder/' in url or '/view/' in url or
+                # Skip navigation and social links
+                not any(skip in text for skip in ['home', 'about', 'contact', 'telegram', 'facebook', 'twitter', 'instagram']) and
+                not any(skip in url for skip in ['facebook.com', 'twitter.com', 'instagram.com', 't.me', 'telegram.me']) and
+                # Must have actual link text or be from known hosting service
+                (len(text.strip()) > 0 or any(domain_name in domain for domain_name in download_domains))
             )
             
             if is_download:
