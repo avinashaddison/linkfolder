@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Link Extractor - Extract All Links from Any Webpage</title>
+    <title>Download Link Extractor - Find Download Links from Any Webpage</title>
     <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
@@ -13,11 +13,11 @@
         <!-- Header -->
         <div class="text-center mb-5">
             <h1 class="display-4 mb-3">
-                <i class="fas fa-link text-primary me-3"></i>
-                Link Extractor
+                <i class="fas fa-download text-primary me-3"></i>
+                Download Link Extractor
             </h1>
             <p class="lead text-muted">
-                Extract and categorize all links from any webpage URL
+                Find and extract download links from any webpage
             </p>
         </div>
 
@@ -57,14 +57,14 @@
                                            required>
                                 </div>
                                 <div class="form-text">
-                                    Enter any webpage URL to extract all its links
+                                    Enter any webpage URL to find its download links
                                 </div>
                             </div>
                             
                             <div class="d-grid">
                                 <button type="submit" class="btn btn-primary btn-lg" id="extractBtn">
-                                    <i class="fas fa-search me-2"></i>
-                                    Extract Links
+                                    <i class="fas fa-download me-2"></i>
+                                    Find Download Links
                                 </button>
                             </div>
                         </form>
@@ -79,9 +79,9 @@
                 <div class="card h-100 border-0 bg-dark">
                     <div class="card-body text-center">
                         <i class="fas fa-filter fa-3x text-primary mb-3"></i>
-                        <h5 class="card-title">Smart Categorization</h5>
+                        <h5 class="card-title">Smart Detection</h5>
                         <p class="card-text text-muted">
-                            Automatically categorizes links into download links, social media, external websites, and more.
+                            Automatically detects download links from file hosting services, direct download URLs, and file extensions.
                         </p>
                     </div>
                 </div>
@@ -93,7 +93,7 @@
                         <i class="fas fa-copy fa-3x text-success mb-3"></i>
                         <h5 class="card-title">Easy Copy</h5>
                         <p class="card-text text-muted">
-                            One-click copy functionality for individual links or entire categories.
+                            One-click copy functionality for individual download links or all links at once.
                         </p>
                     </div>
                 </div>
@@ -103,9 +103,9 @@
                 <div class="card h-100 border-0 bg-dark">
                     <div class="card-body text-center">
                         <i class="fas fa-shield-alt fa-3x text-warning mb-3"></i>
-                        <h5 class="card-title">Safe & Reliable</h5>
+                        <h5 class="card-title">File Host Support</h5>
                         <p class="card-text text-muted">
-                            Robust error handling and validation for safe link extraction.
+                            Supports major file hosting services like Google Drive, Mega, MediaFire, and more.
                         </p>
                     </div>
                 </div>

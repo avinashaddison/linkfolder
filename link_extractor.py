@@ -15,7 +15,7 @@ class LinkExtractor:
         })
     
     def extract_links(self, url):
-        """Extract and categorize all links from a given URL"""
+        """Extract only download links from a given URL"""
         try:
             # Validate and normalize URL
             if not url.startswith(('http://', 'https://')):
@@ -29,16 +29,19 @@ class LinkExtractor:
             soup = BeautifulSoup(response.content, 'html.parser')
             
             # Extract all links
-            links = self._extract_all_links(soup, url)
+            all_links = self._extract_all_links(soup, url)
             
-            # Categorize links
-            categories = self._categorize_links(links)
+            # Filter only download links
+            download_links = self._filter_download_links(all_links)
+            
+            # Create categories with only download links
+            categories = {'Download Links': download_links} if download_links else {}
             
             return {
                 'error': None,
-                'links': links,
+                'links': download_links,
                 'categories': categories,
-                'total_count': len(links)
+                'total_count': len(download_links)
             }
             
         except requests.exceptions.RequestException as e:
@@ -178,6 +181,47 @@ class LinkExtractor:
         # Convert defaultdict to regular dict and sort
         return {k: v for k, v in sorted(categories.items()) if v}
     
+    def _filter_download_links(self, links):
+        """Filter and return only download links"""
+        download_links = []
+        
+        for link in links:
+            url = link['url'].lower()
+            text = link['text'].lower()
+            original_href = link['original_href'].lower()
+            
+            # Parse URL for analysis
+            parsed = urlparse(link['url'])
+            domain = parsed.netloc.lower()
+            path = parsed.path.lower()
+            
+            # Download link indicators
+            download_extensions = ['.zip', '.rar', '.7z', '.tar', '.gz', '.exe', '.msi', '.dmg', '.pkg', 
+                                 '.deb', '.rpm', '.apk', '.ipa', '.pdf', '.doc', '.docx', '.xls', '.xlsx', 
+                                 '.ppt', '.pptx', '.mp4', '.mkv', '.avi', '.mov', '.mp3', '.wav', '.flac']
+            
+            # Download domains (file hosting services)
+            download_domains = ['hubcloud', 'gdflix', 'gdtot', 'drive.google', 'mega.nz', 'mediafire',
+                              'dropbox', 'onedrive', 'box.com', 'wetransfer', 'sendspace', 'zippyshare',
+                              'uploadhaven', '4shared', 'rapidgator', 'turbobit', 'nitroflare']
+            
+            # Download keywords in text or URL
+            download_keywords = ['download', 'get', 'grab', 'fetch', 'direct-dl', 'drive-login']
+            
+            # Check if this is a download link
+            is_download = (
+                any(ext in path for ext in download_extensions) or
+                any(domain_name in domain for domain_name in download_domains) or
+                any(keyword in text for keyword in download_keywords) or
+                any(keyword in url for keyword in download_keywords) or
+                'file/' in url or 'dl/' in url or 'download/' in url
+            )
+            
+            if is_download:
+                download_links.append(link)
+        
+        return download_links
+    
     def get_link_preview(self, url):
         """Get basic preview info for a link (title, description)"""
         try:
@@ -201,7 +245,7 @@ class LinkExtractor:
                     preview['title'] = title_tag.get_text(strip=True)
                 
                 desc_tag = soup.find('meta', attrs={'name': 'description'})
-                if desc_tag:
+                if desc_tag and hasattr(desc_tag, 'get'):
                     preview['description'] = desc_tag.get('content', '')
             
             return preview

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Link Extraction Results - {{ total_count }} Links Found</title>
+    <title>Download Links Found - {{ total_count }} Download Links</title>
     <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
@@ -14,11 +14,11 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <h1 class="h3 mb-1">
-                    <i class="fas fa-link text-primary me-2"></i>
-                    Link Extraction Results
+                    <i class="fas fa-download text-primary me-2"></i>
+                    Download Links Found
                 </h1>
                 <p class="text-muted mb-0">
-                    Found {{ total_count }} links from: 
+                    Found {{ total_count }} download links from: 
                     <a href="{{ url }}" target="_blank" class="text-decoration-none">{{ url }}</a>
                 </p>
             </div>
@@ -34,15 +34,15 @@
                 <div class="card bg-primary text-white">
                     <div class="card-body text-center">
                         <h3 class="mb-1">{{ total_count }}</h3>
-                        <small>Total Links</small>
+                        <small>Download Links</small>
                     </div>
                 </div>
             </div>
             <div class="col-md-3 col-6 mb-3">
                 <div class="card bg-success text-white">
                     <div class="card-body text-center">
-                        <h3 class="mb-1">{{ categories|length }}</h3>
-                        <small>Categories</small>
+                        <h3 class="mb-1">{{ categories.get('Download Links', [])|length }}</h3>
+                        <small>Active Links</small>
                     </div>
                 </div>
             </div>
@@ -70,7 +70,7 @@
                 <div class="d-flex flex-wrap gap-2">
                     <button class="btn btn-secondary" id="copyAllUrls">
                         <i class="fas fa-copy me-2"></i>
-                        Copy All URLs
+                        Copy All Download URLs
                     </button>
                     <button class="btn btn-outline-secondary" id="exportJson">
                         <i class="fas fa-download me-2"></i>
@@ -162,10 +162,10 @@
         {% else %}
             <div class="card">
                 <div class="card-body text-center py-5">
-                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                    <h5>No Links Found</h5>
+                    <i class="fas fa-download fa-3x text-muted mb-3"></i>
+                    <h5>No Download Links Found</h5>
                     <p class="text-muted">
-                        The webpage doesn't contain any extractable links, or they couldn't be accessed.
+                        This webpage doesn't contain any detectable download links, or they couldn't be accessed.
                     </p>
                     <a href="{{ url_for('index') }}" class="btn btn-primary">
                         Try Another URL
