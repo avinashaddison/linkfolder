@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Download Link Extractor - Find Download Links from Any Webpage</title>
+    <title>Movies Link Extractor - Search and Download Movies</title>
     <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
@@ -13,11 +13,11 @@
         <!-- Header -->
         <div class="text-center mb-5">
             <h1 class="display-4 mb-3">
-                <i class="fas fa-download text-primary me-3"></i>
-                Movie Download Link Extractor
+                <i class="fas fa-film text-primary me-3"></i>
+                Movies Link Extractor
             </h1>
             <p class="lead text-muted">
-                Extract download links from MoviesDrive.cc or MDrive.today pages
+                Developed by <strong class="text-info">Avinash Addison</strong>
             </p>
         </div>
 
@@ -34,94 +34,39 @@
             {% endif %}
         {% endwith %}
 
-        <!-- Mode Selector -->
-        <div class="row justify-content-center mb-4">
-            <div class="col-lg-8">
-                <div class="btn-group w-100" role="group">
-                    <input type="radio" class="btn-check" name="mode" id="searchMode" autocomplete="off" checked>
-                    <label class="btn btn-outline-primary" for="searchMode">
-                        <i class="fas fa-search me-2"></i>
-                        Search by Movie Name
-                    </label>
-                    <input type="radio" class="btn-check" name="mode" id="urlMode" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="urlMode">
-                        <i class="fas fa-link me-2"></i>
-                        Direct URL
-                    </label>
-                </div>
-            </div>
-        </div>
-
         <!-- Search Form -->
-        <div class="row justify-content-center" id="searchForm">
-            <div class="col-lg-8">
-                <div class="card shadow-sm">
-                    <div class="card-body p-4">
-                        <form method="POST" action="{{ url_for('search_movies') }}">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xl-6">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body p-5">
+                        <form method="POST" action="{{ url_for('search_movies') }}" class="search-form">
                             <div class="mb-4">
-                                <label for="keyword" class="form-label">
-                                    <i class="fas fa-search me-2"></i>
-                                    Movie Name
+                                <label for="keyword" class="form-label fs-5 fw-bold">
+                                    <i class="fas fa-search text-primary me-2"></i>
+                                    Search Movies
                                 </label>
                                 <div class="input-group input-group-lg">
-                                    <span class="input-group-text">
+                                    <span class="input-group-text bg-primary text-white border-0">
                                         <i class="fas fa-film"></i>
                                     </span>
                                     <input type="text" 
-                                           class="form-control" 
+                                           class="form-control border-0 shadow-sm" 
                                            id="keyword" 
                                            name="keyword" 
-                                           placeholder="e.g., Rangasthalam, Avengers, KGF"
-                                           required>
+                                           placeholder="Enter movie name (e.g., Rangasthalam, KGF, Avengers)"
+                                           required
+                                           autocomplete="off">
                                 </div>
-                                <div class="form-text">
-                                    Enter any movie name to search and find download links
+                                <div class="form-text mt-2">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Just type any movie name and we'll find all download links for you
                                 </div>
                             </div>
                             
                             <div class="d-grid">
-                                <button type="submit" class="btn btn-success btn-lg">
+                                <button type="submit" class="btn btn-primary btn-lg shadow-sm">
                                     <i class="fas fa-search me-2"></i>
-                                    Search Movies
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- URL Form -->
-        <div class="row justify-content-center" id="urlForm" style="display: none;">
-            <div class="col-lg-8">
-                <div class="card shadow-sm">
-                    <div class="card-body p-4">
-                        <form method="POST" action="{{ url_for('extract_links') }}">
-                            <div class="mb-4">
-                                <label for="url" class="form-label">
-                                    <i class="fas fa-globe me-2"></i>
-                                    Website URL
-                                </label>
-                                <div class="input-group input-group-lg">
-                                    <span class="input-group-text">
-                                        <i class="fas fa-link"></i>
-                                    </span>
-                                    <input type="url" 
-                                           class="form-control" 
-                                           id="url" 
-                                           name="url" 
-                                           placeholder="https://moviesdrive.cc/movie-name"
-                                           required>
-                                </div>
-                                <div class="form-text">
-                                    Enter a MoviesDrive.cc URL or MDrive.today URL to extract download links
-                                </div>
-                            </div>
-                            
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary btn-lg">
-                                    <i class="fas fa-download me-2"></i>
-                                    Find Download Links
+                                    Search & Extract Links
                                 </button>
                             </div>
                         </form>
@@ -132,37 +77,43 @@
 
         <!-- Features Section -->
         <div class="row mt-5">
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 border-0 bg-dark">
-                    <div class="card-body text-center">
-                        <i class="fas fa-filter fa-3x text-primary mb-3"></i>
-                        <h5 class="card-title">Smart Search</h5>
+            <div class="col-lg-4 mb-4">
+                <div class="card h-100 border-0 feature-card">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-search fa-3x text-primary"></i>
+                        </div>
+                        <h5 class="card-title fw-bold">Smart Search</h5>
                         <p class="card-text text-muted">
-                            Just enter a movie name and get all available download links with different qualities automatically.
+                            Instantly find movies by name and get all available download links with multiple quality options.
                         </p>
                     </div>
                 </div>
             </div>
             
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 border-0 bg-dark">
-                    <div class="card-body text-center">
-                        <i class="fas fa-copy fa-3x text-success mb-3"></i>
-                        <h5 class="card-title">Easy Copy</h5>
+            <div class="col-lg-4 mb-4">
+                <div class="card h-100 border-0 feature-card">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-download fa-3x text-success"></i>
+                        </div>
+                        <h5 class="card-title fw-bold">Multiple Qualities</h5>
                         <p class="card-text text-muted">
-                            One-click copy functionality for individual download links or all links at once.
+                            Get download links for 480p, 720p, 1080p, and 4K quality options for every movie.
                         </p>
                     </div>
                 </div>
             </div>
             
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 border-0 bg-dark">
-                    <div class="card-body text-center">
-                        <i class="fas fa-shield-alt fa-3x text-warning mb-3"></i>
-                        <h5 class="card-title">Movie Site Support</h5>
+            <div class="col-lg-4 mb-4">
+                <div class="card h-100 border-0 feature-card">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-cloud fa-3x text-info"></i>
+                        </div>
+                        <h5 class="card-title fw-bold">Premium Hosts</h5>
                         <p class="card-text text-muted">
-                            Specialized for MoviesDrive.cc, MDrive.today, and supports HubCloud, GDflix, GDTot hosting services.
+                            Supports HubCloud, GDflix, GDTot, and other premium file hosting services.
                         </p>
                     </div>
                 </div>
@@ -179,17 +130,21 @@
                             Try with these example URLs:
                         </h6>
                         <div class="d-flex flex-wrap gap-2">
-                            <button class="btn btn-outline-secondary btn-sm example-search" data-keyword="Rangasthalam">
-                                Search "Rangasthalam"
+                            <button class="btn btn-outline-info btn-sm example-search" data-keyword="Rangasthalam">
+                                <i class="fas fa-play me-1"></i>
+                                Rangasthalam
                             </button>
-                            <button class="btn btn-outline-secondary btn-sm example-search" data-keyword="KGF">
-                                Search "KGF"
+                            <button class="btn btn-outline-info btn-sm example-search" data-keyword="KGF">
+                                <i class="fas fa-play me-1"></i>
+                                KGF
                             </button>
-                            <button class="btn btn-outline-secondary btn-sm example-search" data-keyword="Avengers">
-                                Search "Avengers"
+                            <button class="btn btn-outline-info btn-sm example-search" data-keyword="Avengers">
+                                <i class="fas fa-play me-1"></i>
+                                Avengers
                             </button>
-                            <button class="btn btn-outline-secondary btn-sm example-url" data-url="https://moviesdrive.cc/rangasthalam-2018/">
-                                Direct URL Example
+                            <button class="btn btn-outline-info btn-sm example-search" data-keyword="RRR">
+                                <i class="fas fa-play me-1"></i>
+                                RRR
                             </button>
                         </div>
                     </div>

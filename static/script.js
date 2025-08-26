@@ -21,28 +21,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Mode switching
-    const searchMode = document.getElementById('searchMode');
-    const urlMode = document.getElementById('urlMode');
-    const searchForm = document.getElementById('searchForm');
-    const urlForm = document.getElementById('urlForm');
-    
-    if (searchMode && urlMode && searchForm && urlForm) {
-        searchMode.addEventListener('change', function() {
-            if (this.checked) {
-                searchForm.style.display = 'block';
-                urlForm.style.display = 'none';
-            }
-        });
-        
-        urlMode.addEventListener('change', function() {
-            if (this.checked) {
-                searchForm.style.display = 'none';
-                urlForm.style.display = 'block';
-            }
-        });
-    }
-
     // Example search buttons
     const exampleSearchButtons = document.querySelectorAll('.example-search');
     exampleSearchButtons.forEach(button => {
@@ -50,34 +28,30 @@ document.addEventListener('DOMContentLoaded', function() {
             const keyword = this.dataset.keyword;
             const keywordInput = document.getElementById('keyword');
             if (keywordInput) {
-                // Switch to search mode
-                if (searchMode) {
-                    searchMode.checked = true;
-                    searchMode.dispatchEvent(new Event('change'));
-                }
                 keywordInput.value = keyword;
                 keywordInput.focus();
+                
+                // Add a nice animation
+                keywordInput.style.transform = 'scale(1.05)';
+                setTimeout(() => {
+                    keywordInput.style.transform = 'scale(1)';
+                }, 200);
             }
         });
     });
-
-    // Example URL buttons
-    const exampleButtons = document.querySelectorAll('.example-url');
-    exampleButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const url = this.dataset.url;
-            const urlInput = document.getElementById('url');
-            if (urlInput) {
-                // Switch to URL mode
-                if (urlMode) {
-                    urlMode.checked = true;
-                    urlMode.dispatchEvent(new Event('change'));
-                }
-                urlInput.value = url;
-                urlInput.focus();
-            }
+    
+    // Enhanced input animations
+    const keywordInput = document.getElementById('keyword');
+    if (keywordInput) {
+        keywordInput.addEventListener('focus', function() {
+            this.parentElement.style.transform = 'scale(1.02)';
+            this.parentElement.style.transition = 'all 0.3s ease';
         });
-    });
+        
+        keywordInput.addEventListener('blur', function() {
+            this.parentElement.style.transform = 'scale(1)';
+        });
+    }
 
     // Copy functionality
     function copyToClipboard(text, successCallback) {
