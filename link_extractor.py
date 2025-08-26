@@ -15,35 +15,19 @@ class LinkExtractor:
         })
     
     def extract_links(self, url):
-        """Extract only download links from a given URL"""
+        """Extract download links - handles both MoviesDrive.cc and MDrive.today links"""
         try:
             # Validate and normalize URL
             if not url.startswith(('http://', 'https://')):
                 url = 'https://' + url
             
-            # Fetch the webpage
-            response = self.session.get(url, timeout=10)
-            response.raise_for_status()
-            
-            # Parse HTML content
-            soup = BeautifulSoup(response.content, 'html.parser')
-            
-            # Extract all links
-            all_links = self._extract_all_links(soup, url)
-            
-            # Filter only download links
-            download_links = self._filter_download_links(all_links)
-            
-            # Create categories with only download links
-            categories = {'Download Links': download_links} if download_links else {}
-            
-            return {
-                'error': None,
-                'links': download_links,
-                'categories': categories,
-                'total_count': len(download_links)
-            }
-            
+            # Check if this is a MoviesDrive.cc URL
+            if 'moviesdrive.cc' in url or 'moviesdrives.cv' in url:
+                return self._handle_movies_drive_url(url)
+            else:
+                # Handle regular download link extraction
+                return self._extract_direct_download_links(url)
+                
         except requests.exceptions.RequestException as e:
             logging.error(f"Request error: {str(e)}")
             return {
@@ -60,6 +44,90 @@ class LinkExtractor:
                 'categories': {},
                 'total_count': 0
             }
+    
+    def _handle_movies_drive_url(self, url):
+        """Handle MoviesDrive.cc URLs by finding MDrive.today links and extracting from them"""
+        # Fetch the MoviesDrive.cc page
+        response = self.session.get(url, timeout=10)
+        response.raise_for_status()
+        
+        soup = BeautifulSoup(response.content, 'html.parser')
+        
+        # Find all MDrive.today links
+        mdrive_links = []
+        for link in soup.find_all('a', href=True):
+            href = link['href']
+            if 'mdrive.today/archives/' in href:
+                quality_text = link.get_text(strip=True)
+                mdrive_links.append({
+                    'url': href,
+                    'quality': quality_text,
+                    'text': quality_text
+                })
+        
+        if not mdrive_links:
+            return {
+                'error': 'No MDrive.today links found in this MoviesDrive.cc page',
+                'links': [],
+                'categories': {},
+                'total_count': 0
+            }
+        
+        # Extract download links from each MDrive.today page
+        all_download_links = []
+        categories = {}
+        
+        for mdrive_link in mdrive_links:
+            try:
+                # Extract download links from this MDrive.today page
+                result = self._extract_direct_download_links(mdrive_link['url'])
+                
+                if result['links']:
+                    # Add quality info to each download link
+                    for download_link in result['links']:
+                        download_link['quality'] = mdrive_link['quality']
+                        download_link['source_url'] = mdrive_link['url']
+                    
+                    # Organize by quality
+                    quality_name = mdrive_link['quality']
+                    categories[quality_name] = result['links']
+                    all_download_links.extend(result['links'])
+                    
+            except Exception as e:
+                logging.error(f"Error extracting from {mdrive_link['url']}: {str(e)}")
+                continue
+        
+        return {
+            'error': None,
+            'links': all_download_links,
+            'categories': categories,
+            'total_count': len(all_download_links)
+        }
+    
+    def _extract_direct_download_links(self, url):
+        """Extract download links from a single page (like MDrive.today)"""
+        # Fetch the webpage
+        response = self.session.get(url, timeout=10)
+        response.raise_for_status()
+        
+        # Parse HTML content
+        soup = BeautifulSoup(response.content, 'html.parser')
+        
+        # Extract all links
+        all_links = self._extract_all_links(soup, url)
+        
+        # Filter only download links
+        download_links = self._filter_download_links(all_links)
+        
+        # Create categories with only download links
+        categories = {'Download Links': download_links} if download_links else {}
+        
+        return {
+            'error': None,
+            'links': download_links,
+            'categories': categories,
+            'total_count': len(download_links)
+        }
     
     def _extract_all_links(self, soup, base_url):
         """Extract all links from the parsed HTML"""
@@ -289,8 +357,8 @@ class LinkExtractor:
                     preview['title'] = title_tag.get_text(strip=True)
                 
                 desc_tag = soup.find('meta', attrs={'name': 'description'})
-                if desc_tag and hasattr(desc_tag, 'attrs') and 'content' in desc_tag.attrs:
-                    preview['description'] = desc_tag.attrs['content']
+                if desc_tag and hasattr(desc_tag, 'get'):
+                    preview['description'] = desc_tag.get('content', '')
             
             return preview
             
