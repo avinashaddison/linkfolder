@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link Extraction Results - {{ total_count }} Links Found</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="container my-4">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h3 mb-1">
+                    <i class="fas fa-link text-primary me-2"></i>
+                    Link Extraction Results
+                </h1>
+                <p class="text-muted mb-0">
+                    Found {{ total_count }} links from: 
+                    <a href="{{ url }}" target="_blank" class="text-decoration-none">{{ url }}</a>
+                </p>
+            </div>
+            <a href="{{ url_for('index') }}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left me-2"></i>
+                Extract Another
+            </a>
+        </div>
+
+        <!-- Summary Statistics -->
+        <div class="row mb-4">
+            <div class="col-md-3 col-6 mb-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body text-center">
+                        <h3 class="mb-1">{{ total_count }}</h3>
+                        <small>Total Links</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body text-center">
+                        <h3 class="mb-1">{{ categories|length }}</h3>
+                        <small>Categories</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body text-center">
+                        <h3 class="mb-1">{{ categories.get('Download Links', [])|length }}</h3>
+                        <small>Download Links</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="card bg-warning text-dark">
+                    <div class="card-body text-center">
+                        <h3 class="mb-1">{{ categories.get('External Links', [])|length }}</h3>
+                        <small>External Links</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex flex-wrap gap-2">
+                    <button class="btn btn-secondary" id="copyAllUrls">
+                        <i class="fas fa-copy me-2"></i>
+                        Copy All URLs
+                    </button>
+                    <button class="btn btn-outline-secondary" id="exportJson">
+                        <i class="fas fa-download me-2"></i>
+                        Export as JSON
+                    </button>
+                    <button class="btn btn-outline-secondary" id="exportCsv">
+                        <i class="fas fa-file-csv me-2"></i>
+                        Export as CSV
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Categories -->
+        {% if categories %}
+            {% for category_name, category_links in categories.items() %}
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-{{ 'download' if 'Download' in category_name else 'share-alt' if 'Social' in category_name else 'envelope' if 'Email' in category_name else 'phone' if 'Phone' in category_name else 'image' if 'Image' in category_name else 'play' if 'Media' in category_name else 'compass' if 'Navigation' in category_name else 'external-link-alt' }} me-2"></i>
+                            {{ category_name }}
+                            <span class="badge bg-secondary ms-2">{{ category_links|length }}</span>
+                        </h5>
+                        <button class="btn btn-sm btn-outline-primary copy-category" data-category="{{ category_name }}">
+                            <i class="fas fa-copy me-1"></i>
+                            Copy All
+                        </button>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th style="width: 50%">Link Text</th>
+                                        <th style="width: 40%">URL</th>
+                                        <th style="width: 10%">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for link in category_links %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    {% if link.target == '_blank' %}
+                                                        <i class="fas fa-external-link-alt text-muted me-2"></i>
+                                                    {% endif %}
+                                                    <div>
+                                                        <div class="fw-medium">{{ link.text[:100] }}{% if link.text|length > 100 %}...{% endif %}</div>
+                                                        {% if link.title and link.title != link.text %}
+                                                            <small class="text-muted">{{ link.title[:80] }}{% if link.title|length > 80 %}...{% endif %}</small>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="url-container">
+                                                    <a href="{{ link.url }}" target="_blank" class="text-decoration-none text-break">
+                                                        {{ link.url[:60] }}{% if link.url|length > 60 %}...{% endif %}
+                                                    </a>
+                                                    {% if link.original_href != link.url %}
+                                                        <br>
+                                                        <small class="text-muted">Original: {{ link.original_href }}</small>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group btn-group-sm">
+                                                    <button class="btn btn-outline-secondary copy-link" 
+                                                            data-url="{{ link.url }}" 
+                                                            title="Copy URL">
+                                                        <i class="fas fa-copy"></i>
+                                                    </button>
+                                                    <a href="{{ link.url }}" 
+                                                       target="_blank" 
+                                                       class="btn btn-outline-primary"
+                                                       title="Open Link">
+                                                        <i class="fas fa-external-link-alt"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                    <h5>No Links Found</h5>
+                    <p class="text-muted">
+                        The webpage doesn't contain any extractable links, or they couldn't be accessed.
+                    </p>
+                    <a href="{{ url_for('index') }}" class="btn btn-primary">
+                        Try Another URL
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Toast for copy notifications -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="copyToast" class="toast" role="alert">
+            <div class="toast-header">
+                <i class="fas fa-check-circle text-success me-2"></i>
+                <strong class="me-auto">Copied!</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body">
+                Link copied to clipboard successfully.
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    
+    <!-- Page-specific scripts -->
+    <script>
+        // Store links data for export
+        const linksData = {{ links | tojson }};
+        const categoriesData = {{ categories | tojson }};
+    </script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+/* Custom styles for Link Extractor */
+
+:root {
+    --transition-speed: 0.3s;
+}
+
+/* Smooth transitions for interactive elements */
+.btn, .card, .form-control {
+    transition: all var(--transition-speed) ease;
+}
+
+/* Custom hover effects */
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* URL input styling */
+.url-container {
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+}
+
+/* Link text truncation */
+.text-break {
+    word-break: break-all;
+}
+
+/* Copy button animations */
+.copy-link:hover, .copy-category:hover {
+    transform: scale(1.05);
+}
+
+/* Loading states */
+.btn.loading {
+    position: relative;
+    color: transparent !important;
+}
+
+.btn.loading::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Table responsiveness improvements */
+@media (max-width: 768px) {
+    .table th:nth-child(2),
+    .table td:nth-child(2) {
+        max-width: 200px;
+    }
+    
+    .btn-group-sm .btn {
+        padding: 0.25rem 0.4rem;
+        font-size: 0.8rem;
+    }
+}
+
+/* Statistics cards */
+.card.bg-primary,
+.card.bg-success,
+.card.bg-info,
+.card.bg-warning {
+    border: none;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Example URL buttons */
+.example-url {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.example-url:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Toast positioning */
+.toast-container {
+    z-index: 1050;
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bs-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--bs-secondary);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--bs-light);
+}
+
+/* Focus states for accessibility */
+.btn:focus,
+.form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.25);
+}
+
+/* Error states */
+.is-invalid {
+    border-color: var(--bs-danger) !important;
+}
+
+/* Success states */
+.is-valid {
+    border-color: var(--bs-success) !important;
+}
+
+/* Responsive font sizes */
+@media (max-width: 576px) {
+    .display-4 {
+        font-size: 2rem;
+    }
+    
+    .lead {
+        font-size: 1rem;
+    }
+}
+
+/* Category icons spacing */
+.card-header i {
+    width: 20px;
+    text-align: center;
+}
+
+/* Link hover effects in tables */
+.table tbody tr:hover {
+    background-color: rgba(var(--bs-primary-rgb), 0.1);
+}
+
+/* Badge styling */
+.badge {
+    font-size: 0.75em;
+}
+
+/* Loading modal */
+.modal-content {
+    border: none;
+    border-radius: 10px;
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
